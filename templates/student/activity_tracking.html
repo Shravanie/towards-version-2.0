@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Track Activity - Towards Version 2.0{% endblock %}
+
+{% block content %}
+
+<div class="form-page">
+
+    <div class="form-header">
+        <div>
+            <p class="dashboard-label">DAILY TRACKING</p>
+            <h1>Track Activity</h1>
+            <p class="dashboard-subtitle">
+                Record your progress for this activity.
+            </p>
+        </div>
+
+        <a href="{{ url_for('student.activities') }}" class="secondary-button">
+            ← Back to Activities
+        </a>
+    </div>
+
+    <div class="form-card">
+
+        <div class="activity-track-info">
+            <h2>{{ activity.title }}</h2>
+
+            {% if activity.description %}
+                <p>{{ activity.description }}</p>
+            {% endif %}
+
+            <div class="activity-meta">
+                <span>{{ activity.category }}</span>
+                <span>{{ activity.frequency|capitalize }}</span>
+
+                {% if activity.target %}
+                    <span>
+                        Target: {{ activity.target }} {{ activity.unit }}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <form method="POST" class="activity-form">
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="log_date">Date</label>
+                    <input
+                        type="date"
+                        id="log_date"
+                        name="log_date"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="completed">Completion Status</label>
+
+                    <select id="completed" name="completed" required>
+                        <option value="yes">Completed</option>
+                        <option value="no">Not Completed</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="actual_value">
+                        Actual Value
+                        {% if activity.unit %}
+                            ({{ activity.unit }})
+                        {% endif %}
+                    </label>
+
+                    <input
+                        type="number"
+                        id="actual_value"
+                        name="actual_value"
+                        min="0"
+                        step="0.01"
+                        value="0"
+                        placeholder="Enter actual value"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="time_spent">Time Spent (minutes)</label>
+
+                    <input
+                        type="number"
+                        id="time_spent"
+                        name="time_spent"
+                        min="0"
+                        value="0"
+                        placeholder="Enter time spent"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('student.activities') }}"
+                    class="secondary-button"
+                >
+                    Cancel
+                </a>
+
+                <button type="submit" class="primary-button">
+                    Save Progress
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,404 @@
+{% extends "base.html" %}
+
+{% block title %}Growth Analytics - Towards Version 2.0{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="dashboard-header">
+
+        <div>
+            <p class="dashboard-label">GROWTH ANALYTICS</p>
+
+            <h1>
+                Your Growth
+            </h1>
+
+            <p class="dashboard-subtitle">
+                See how your consistency and effort are building your progress.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('student.dashboard') }}"
+            class="secondary-button"
+        >
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- Overview -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">📈</div>
+
+            <div>
+                <p class="stat-label">Completion Rate</p>
+                <h2>{{ analytics.completion_rate }}%</h2>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">🔥</div>
+
+            <div>
+                <p class="stat-label">Current Streak</p>
+                <h2>{{ analytics.current_streak }} days</h2>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+
+            <div>
+                <p class="stat-label">Best Streak</p>
+                <h2>{{ analytics.best_streak }} days</h2>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">⏱</div>
+
+            <div>
+                <p class="stat-label">Time Invested</p>
+                <h2>{{ analytics.total_time }}h</h2>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Adaptive Insight -->
+
+    <div class="dashboard-card insight-card">
+
+        <div class="card-header">
+
+            <div>
+                <p class="dashboard-label">PERSONALIZED INSIGHT</p>
+
+                <h3>
+                    Keep Going
+                </h3>
+            </div>
+
+        </div>
+
+        <p class="insight-text">
+            {{ analytics.insight }}
+        </p>
+
+    </div>
+
+
+    <!-- Weekly and Monthly Progress -->
+
+    <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+                    <p class="dashboard-label">LAST 7 DAYS</p>
+
+                    <h3>
+                        Weekly Progress
+                    </h3>
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+                <canvas id="weeklyProgressChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+                    <p class="dashboard-label">LAST 6 MONTHS</p>
+
+                    <h3>
+                        Monthly Progress
+                    </h3>
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+                <canvas id="monthlyProgressChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Activity Progress and Time Investment -->
+
+    <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+                    <p class="dashboard-label">ACTIVITY PERFORMANCE</p>
+
+                    <h3>
+                        Activity Progress
+                    </h3>
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+                <canvas id="activityProgressChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+                    <p class="dashboard-label">TIME INVESTMENT</p>
+
+                    <h3>
+                        Time Invested by Activity
+                    </h3>
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+                <canvas id="timeInvestmentChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Summary -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+                <p class="dashboard-label">PROGRESS SUMMARY</p>
+
+                <h3>
+                    Your Effort Matters
+                </h3>
+            </div>
+
+        </div>
+
+        <p class="dashboard-subtitle">
+            Keep tracking your activities regularly. Small, consistent
+            actions build long-term growth.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+
+<script>
+
+    const weeklyData = {{ analytics.weekly_progress | tojson }};
+    const monthlyData = {{ analytics.monthly_progress | tojson }};
+    const activityData = {{ analytics.activity_progress | tojson }};
+    const timeData = {{ analytics.time_investment | tojson }};
+
+
+    /*
+     * Weekly Progress Chart
+     */
+
+    new Chart(
+        document.getElementById("weeklyProgressChart"),
+        {
+            type: "line",
+
+            data: {
+                labels: weeklyData.map(item => item.date),
+
+                datasets: [
+                    {
+                        label: "Completion %",
+                        data: weeklyData.map(item => item.completion),
+
+                        borderWidth: 2,
+
+                        tension: 0.3,
+
+                        fill: false
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        }
+    );
+
+
+    /*
+     * Monthly Progress Chart
+     */
+
+    new Chart(
+        document.getElementById("monthlyProgressChart"),
+        {
+            type: "line",
+
+            data: {
+                labels: monthlyData.map(item => item.month),
+
+                datasets: [
+                    {
+                        label: "Completion %",
+                        data: monthlyData.map(item => item.completion),
+
+                        borderWidth: 2,
+
+                        tension: 0.3,
+
+                        fill: false
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        }
+    );
+
+
+    /*
+     * Activity Progress Chart
+     */
+
+    new Chart(
+        document.getElementById("activityProgressChart"),
+        {
+            type: "bar",
+
+            data: {
+                labels: activityData.map(item => item.title),
+
+                datasets: [
+                    {
+                        label: "Completion %",
+
+                        data: activityData.map(
+                            item => item.completion
+                        ),
+
+                        borderWidth: 1
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        }
+    );
+
+
+    /*
+     * Time Investment Chart
+     */
+
+    new Chart(
+        document.getElementById("timeInvestmentChart"),
+        {
+            type: "bar",
+
+            data: {
+                labels: timeData.map(item => item.title),
+
+                datasets: [
+                    {
+                        label: "Hours",
+
+                        data: timeData.map(
+                            item => item.hours
+                        ),
+
+                        borderWidth: 1
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+    );
+
+</script>
+
+{% endblock %}

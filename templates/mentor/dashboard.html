@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Mentor Dashboard - Towards Version 2.0{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <!-- Header -->
+
+    <div class="dashboard-header">
+
+        <div>
+            <p class="dashboard-label">MENTOR DASHBOARD</p>
+
+            <h1>
+                Welcome, {{ name }}
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Monitor your students' progress and help them grow consistently.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('auth.logout') }}"
+            class="secondary-button"
+        >
+            Logout
+        </a>
+
+    </div>
+
+
+    <!-- Overview -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <div>
+                <p class="stat-label">
+                    Assigned Students
+                </p>
+
+                <h2>
+                    {{ students|length }}
+                </h2>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📈
+            </div>
+
+            <div>
+                <p class="stat-label">
+                    Students Tracked
+                </p>
+
+                <h2>
+                    {{ students|length }}
+                </h2>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Students -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+                <p class="dashboard-label">
+                    MY STUDENTS
+                </p>
+
+                <h3>
+                    Student Progress
+                </h3>
+            </div>
+
+        </div>
+
+
+        {% if students %}
+
+            <div class="student-table-wrapper">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Student
+                            </th>
+
+                            <th>
+                                Completion
+                            </th>
+
+                            <th>
+                                Activities
+                            </th>
+
+                            <th>
+                                Time Invested
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for student in students %}
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="student-name">
+                                        {{ student.name }}
+                                    </div>
+
+                                    <div class="student-email">
+                                        {{ student.email }}
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="progress-cell">
+
+                                        <div class="progress-bar">
+
+                                            <div
+                                                class="progress-fill"
+                                                style="width: {{ student.completion_rate }}%;"
+                                            ></div>
+
+                                        </div>
+
+                                        <span>
+                                            {{ student.completion_rate }}%
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+                                    {{ student.completed_logs }}
+                                    / {{ student.total_logs }}
+                                </td>
+
+
+                                <td>
+                                    {{ student.total_hours }}h
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        href="{{ url_for('mentor.student_detail', student_id=student.id) }}"
+                                        class="table-action"
+                                    >
+                                        View Student →
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-state-icon">
+                    👥
+                </div>
+
+                <h3>
+                    No students assigned
+                </h3>
+
+                <p>
+                    Students assigned to you will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

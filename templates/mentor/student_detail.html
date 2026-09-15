@@ -1,0 +1,660 @@
+{% extends "base.html" %}
+
+{% block title %}Student Progress - Towards Version 2.0{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <!-- Header -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <p class="dashboard-label">
+                STUDENT MONITORING
+            </p>
+
+            <h1>
+                {{ student.name }}
+            </h1>
+
+            <p class="dashboard-subtitle">
+                {{ student.email }}
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('mentor.dashboard') }}"
+            class="secondary-button"
+        >
+            ← Back to Students
+        </a>
+
+    </div>
+
+
+    <!-- Overview -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📈
+            </div>
+
+            <div>
+
+                <p class="stat-label">
+                    Completion Rate
+                </p>
+
+                <h2>
+                    {{ analytics.completion_rate }}%
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🔥
+            </div>
+
+            <div>
+
+                <p class="stat-label">
+                    Current Streak
+                </p>
+
+                <h2>
+                    {{ analytics.current_streak }} days
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🏆
+            </div>
+
+            <div>
+
+                <p class="stat-label">
+                    Best Streak
+                </p>
+
+                <h2>
+                    {{ analytics.best_streak }} days
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ⏱
+            </div>
+
+            <div>
+
+                <p class="stat-label">
+                    Time Invested
+                </p>
+
+                <h2>
+                    {{ analytics.total_time }}h
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Activities -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <p class="dashboard-label">
+                    ACTIVITIES
+                </p>
+
+                <h3>
+                    Student Activities
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        {% if activities %}
+
+            <div class="student-table-wrapper">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Activity</th>
+                            <th>Category</th>
+                            <th>Frequency</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for activity in activities %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        {{ activity.title }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ activity.category }}
+                                </td>
+
+                                <td>
+                                    {{ activity.frequency }}
+                                </td>
+
+                                <td>
+                                    {{ activity.priority|capitalize }}
+                                </td>
+
+                                <td>
+                                    {{ activity.status|capitalize }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-state-icon">
+                    📝
+                </div>
+
+                <h3>
+                    No activities yet
+                </h3>
+
+                <p>
+                    This student has not created any activities.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Progress Charts -->
+
+    <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <p class="dashboard-label">
+                        WEEKLY PROGRESS
+                    </p>
+
+                    <h3>
+                        Last 7 Days
+                    </h3>
+
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="weeklyProgressChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <p class="dashboard-label">
+                        ACTIVITY PERFORMANCE
+                    </p>
+
+                    <h3>
+                        Activity Completion
+                    </h3>
+
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="activityProgressChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Give Feedback -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <p class="dashboard-label">
+                    MENTOR FEEDBACK
+                </p>
+
+                <h3>
+                    Give Feedback
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'mentor.add_feedback',
+                student_id=student.id
+            ) }}"
+            class="feedback-form"
+        >
+
+            <div class="form-group">
+
+                <label for="activity_id">
+                    Activity
+                </label>
+
+                <select
+                    id="activity_id"
+                    name="activity_id"
+                >
+
+                    <option value="">
+                        General Feedback
+                    </option>
+
+                    {% for activity in activities %}
+
+                        <option value="{{ activity.id }}">
+                            {{ activity.title }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="feedback_text">
+                    Feedback
+                </label>
+
+                <textarea
+                    id="feedback_text"
+                    name="feedback_text"
+                    rows="4"
+                    placeholder="Write constructive feedback for the student..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="primary-button"
+            >
+                Send Feedback
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- Feedback History -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <p class="dashboard-label">
+                    FEEDBACK HISTORY
+                </p>
+
+                <h3>
+                    Previous Feedback
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        {% if feedback %}
+
+            {% for item in feedback %}
+
+                <div class="feedback-item">
+
+                    <p>
+                        {{ item.feedback_text }}
+                    </p>
+
+
+                    <span class="feedback-date">
+
+                        {% if item.activity_title %}
+
+                            {{ item.activity_title }} ·
+
+                        {% else %}
+
+                            General Feedback ·
+
+                        {% endif %}
+
+                        {{ item.created_at.strftime("%d %b %Y") }}
+
+                    </span>
+
+
+                    <!-- Feedback Actions -->
+
+                    <div class="feedback-actions">
+
+                        <a
+                            href="#edit-feedback-{{ item.id }}"
+                            class="table-action edit"
+                        >
+                            Edit
+                        </a>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'mentor.delete_feedback',
+                                feedback_id=item.id
+                            ) }}"
+                            style="display: inline;"
+                        >
+
+                            <button
+                                type="submit"
+                                class="table-action delete"
+                                onclick="return confirm('Are you sure you want to delete this feedback?');"
+                            >
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- Edit Feedback -->
+
+                    <div
+                        id="edit-feedback-{{ item.id }}"
+                        class="edit-feedback-form"
+                    >
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'mentor.edit_feedback',
+                                feedback_id=item.id
+                            ) }}"
+                        >
+
+                            <div class="form-group">
+
+                                <label for="feedback-{{ item.id }}">
+                                    Edit Feedback
+                                </label>
+
+                                <textarea
+                                    id="feedback-{{ item.id }}"
+                                    name="feedback_text"
+                                    rows="4"
+                                    required
+                                >{{ item.feedback_text }}</textarea>
+
+                            </div>
+
+
+                            <div class="feedback-edit-actions">
+
+                                <button
+                                    type="submit"
+                                    class="primary-button"
+                                >
+                                    Save Changes
+                                </button>
+
+                                <a
+                                    href="#"
+                                    class="secondary-button"
+                                >
+                                    Cancel
+                                </a>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <p>
+                    No feedback has been given yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+
+<script>
+
+    const weeklyData =
+        {{ analytics.weekly_progress | tojson }};
+
+    const activityData =
+        {{ analytics.activity_progress | tojson }};
+
+
+    /* Weekly Progress */
+
+    new Chart(
+        document.getElementById("weeklyProgressChart"),
+        {
+            type: "line",
+
+            data: {
+
+                labels: weeklyData.map(
+                    item => item.date
+                ),
+
+                datasets: [
+                    {
+                        label: "Completion %",
+
+                        data: weeklyData.map(
+                            item => item.completion
+                        ),
+
+                        borderWidth: 2,
+
+                        tension: 0.3,
+
+                        fill: false
+                    }
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* Activity Completion */
+
+    new Chart(
+        document.getElementById("activityProgressChart"),
+        {
+            type: "bar",
+
+            data: {
+
+                labels: activityData.map(
+                    item => item.title
+                ),
+
+                datasets: [
+                    {
+                        label: "Completion %",
+
+                        data: activityData.map(
+                            item => item.completion
+                        ),
+
+                        borderWidth: 1
+                    }
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+</script>
+
+{% endblock %}

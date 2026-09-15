@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Activity - Towards Version 2.0{% endblock %}
+
+{% block content %}
+
+<div class="form-page">
+
+    <div class="form-page-header">
+
+        <a
+            href="{{ url_for('student.activities') }}"
+            class="back-link"
+        >
+            ← Back to My Activities
+        </a>
+
+        <h1>Edit Activity</h1>
+
+        <p>
+            Update the details of your activity.
+        </p>
+
+    </div>
+
+
+    <div class="form-card">
+
+        <form method="POST" class="activity-form">
+
+            <div class="form-group">
+
+                <label for="title">Activity Title</label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="{{ activity.title }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="description">Description</label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="4"
+                >{{ activity.description or '' }}</textarea>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="category">Category</label>
+
+                    <select id="category" name="category" required>
+
+                        <option value="Academic"
+                            {% if activity.category == "Academic" %}selected{% endif %}>
+                            Academic
+                        </option>
+
+                        <option value="Fitness"
+                            {% if activity.category == "Fitness" %}selected{% endif %}>
+                            Fitness
+                        </option>
+
+                        <option value="Personal"
+                            {% if activity.category == "Personal" %}selected{% endif %}>
+                            Personal
+                        </option>
+
+                        <option value="Skill"
+                            {% if activity.category == "Skill" %}selected{% endif %}>
+                            Skill Development
+                        </option>
+
+                        <option value="Health"
+                            {% if activity.category == "Health" %}selected{% endif %}>
+                            Health
+                        </option>
+
+                        <option value="Other"
+                            {% if activity.category == "Other" %}selected{% endif %}>
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="priority">Priority</label>
+
+                    <select id="priority" name="priority" required>
+
+                        <option value="low"
+                            {% if activity.priority == "low" %}selected{% endif %}>
+                            Low
+                        </option>
+
+                        <option value="medium"
+                            {% if activity.priority == "medium" %}selected{% endif %}>
+                            Medium
+                        </option>
+
+                        <option value="high"
+                            {% if activity.priority == "high" %}selected{% endif %}>
+                            High
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="frequency">Frequency</label>
+
+                    <select id="frequency" name="frequency" required>
+
+                        <option value="daily"
+                            {% if activity.frequency == "daily" %}selected{% endif %}>
+                            Daily
+                        </option>
+
+                        <option value="weekly"
+                            {% if activity.frequency == "weekly" %}selected{% endif %}>
+                            Weekly
+                        </option>
+
+                        <option value="monthly"
+                            {% if activity.frequency == "monthly" %}selected{% endif %}>
+                            Monthly
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="target">Target</label>
+
+                    <input
+                        type="number"
+                        id="target"
+                        name="target"
+                        min="0"
+                        step="0.01"
+                        value="{{ activity.target or '' }}"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="unit">Unit</label>
+
+                    <input
+                        type="text"
+                        id="unit"
+                        name="unit"
+                        value="{{ activity.unit or '' }}"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="start_date">Start Date</label>
+
+                    <input
+                        type="date"
+                        id="start_date"
+                        name="start_date"
+                        value="{{ activity.start_date }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="end_date">End Date / Deadline</label>
+
+                    <input
+                        type="date"
+                        id="end_date"
+                        name="end_date"
+                        value="{{ activity.end_date or '' }}"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('student.activities') }}"
+                    class="cancel-button"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

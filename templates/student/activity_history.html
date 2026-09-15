@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Activity History - Towards Version 2.0{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="dashboard-header">
+
+        <div>
+            <p class="dashboard-label">PROGRESS HISTORY</p>
+
+            <h1>Activity History</h1>
+
+            <p class="dashboard-subtitle">
+                Review your progress and see how consistently you've been
+                working towards your goals.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('student.activities') }}"
+            class="secondary-button"
+        >
+            ← Activities
+        </a>
+
+    </div>
+
+
+    <div class="dashboard-card history-card">
+
+        <div class="card-header">
+
+            <div>
+                <h2>Your Progress</h2>
+
+                <p>
+                    Every logged activity contributes to your growth.
+                </p>
+            </div>
+
+        </div>
+
+
+        {% if logs %}
+
+            <div class="table-container">
+
+                <table class="activities-table">
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Activity</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Actual Value</th>
+                            <th>Time Spent</th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for log in logs %}
+
+                            <tr>
+
+                                <td>
+                                    {{ log.log_date }}
+                                </td>
+
+
+                                <td>
+                                    <strong>
+                                        {{ log.title }}
+                                    </strong>
+                                </td>
+
+
+                                <td>
+                                    {{ log.category }}
+                                </td>
+
+
+                                <td>
+
+                                    {% if log.completed %}
+
+                                        <span class="history-status completed">
+                                            Completed
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="history-status incomplete">
+                                            Not Completed
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+                                    {{ log.actual_value }}
+
+                                    {% if log.unit %}
+                                        {{ log.unit }}
+                                    {% endif %}
+                                </td>
+
+
+                                <td>
+                                    {{ log.time_spent }} min
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    ◷
+                </div>
+
+                <h3>
+                    No activity history yet
+                </h3>
+
+                <p>
+                    Once you start tracking your activities,
+                    your progress will appear here.
+                </p>
+
+                <a
+                    href="{{ url_for('student.activities') }}"
+                    class="secondary-button"
+                >
+                    Track an Activity
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

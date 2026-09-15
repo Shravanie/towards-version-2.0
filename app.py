@@ -1,9 +1,20 @@
 from flask import Flask
 import mysql.connector
+
 from config import Config
+from routes.auth import auth_bp
+from routes.student import student_bp
+from routes.mentor import mentor_bp
 
 app = Flask(__name__)
+
 app.config.from_object(Config)
+
+
+# Register route blueprints
+app.register_blueprint(auth_bp)
+app.register_blueprint(student_bp)
+app.register_blueprint(mentor_bp)
 
 
 @app.route("/")
@@ -13,6 +24,7 @@ def home():
 
 @app.route("/test-db")
 def test_db():
+
     connection = mysql.connector.connect(
         host=app.config["DB_HOST"],
         user=app.config["DB_USER"],

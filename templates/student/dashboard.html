@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - Towards Version 2.0{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <!-- Dashboard Header -->
+
+    <div class="dashboard-header">
+
+        <div>
+            <p class="dashboard-label">
+                STUDENT DASHBOARD
+            </p>
+
+            <h1>
+                Welcome back, {{ name }} 👋
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Keep moving forward. Every small step counts.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('student.add_activity') }}"
+            class="dashboard-action"
+        >
+            + Add Activity
+        </a>
+
+    </div>
+
+
+    <!-- Statistics -->
+
+    <div class="stats-grid">
+
+        <!-- Completion Rate -->
+
+        <div class="stat-card">
+
+            <p class="stat-label">
+                Completion Rate
+            </p>
+
+            <h2>
+                {{ analytics.completion_rate }}%
+            </h2>
+
+            <p class="stat-description">
+                Overall progress
+            </p>
+
+        </div>
+
+
+        <!-- Current Streak -->
+
+        <div class="stat-card">
+
+            <p class="stat-label">
+                Current Streak
+            </p>
+
+            <h2>
+                {{ analytics.current_streak }} days
+            </h2>
+
+            <p class="stat-description">
+                Keep it going!
+            </p>
+
+        </div>
+
+
+        <!-- Best Streak -->
+
+        <div class="stat-card">
+
+            <p class="stat-label">
+                Best Streak
+            </p>
+
+            <h2>
+                {{ analytics.best_streak }} days
+            </h2>
+
+            <p class="stat-description">
+                Your personal best
+            </p>
+
+        </div>
+
+
+        <!-- Time Invested -->
+
+        <div class="stat-card">
+
+            <p class="stat-label">
+                Time Invested
+            </p>
+
+            <h2>
+                {{ analytics.total_time }}h
+            </h2>
+
+            <p class="stat-description">
+                Total time tracked
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Main Dashboard Grid -->
+
+    <div class="dashboard-grid">
+
+
+        <!-- Today's Activities -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Today's Activities
+                    </h2>
+
+                    <p>
+                        Stay consistent with your goals.
+                    </p>
+
+                </div>
+
+                <a href="{{ url_for('student.activities') }}">
+                    View all
+                </a>
+
+            </div>
+
+
+            {% if activities %}
+
+                <div class="activity-list">
+
+                    {% for activity in activities %}
+
+                        <div class="activity-item">
+
+                            <div class="activity-info">
+
+                                <div class="activity-title-row">
+
+                                    <h3>
+                                        {{ activity.title }}
+                                    </h3>
+
+                                    <span
+                                        class="priority-badge {{ activity.priority }}"
+                                    >
+                                        {{ activity.priority|capitalize }}
+                                    </span>
+
+                                </div>
+
+                                <p>
+                                    {{ activity.category }}
+                                    ·
+                                    {{ activity.frequency|capitalize }}
+                                </p>
+
+                            </div>
+
+
+                            <div class="activity-status">
+
+                                <a
+                                    href="{{ url_for(
+                                        'student.track_activity',
+                                        activity_id=activity.id
+                                    ) }}"
+                                    class="table-action"
+                                >
+                                    Track
+                                </a>
+
+                                <span class="status-badge">
+                                    {{ activity.status|capitalize }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        ✓
+                    </div>
+
+                    <h3>
+                        No activities yet
+                    </h3>
+
+                    <p>
+                        Add your first activity to start tracking your growth.
+                    </p>
+
+                    <a
+                        href="{{ url_for('student.add_activity') }}"
+                        class="secondary-button"
+                    >
+                        Add Activity
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Quick Actions -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Quick Actions
+                    </h2>
+
+                    <p>
+                        Manage your growth journey.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+
+                <!-- Add Activity -->
+
+                <a
+                    href="{{ url_for('student.add_activity') }}"
+                    class="quick-action"
+                >
+
+                    <span>
+                        ＋
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Add Activity
+                        </strong>
+
+                        <small>
+                            Create something to work on
+                        </small>
+
+                    </div>
+
+                </a>
+
+
+                <!-- View Growth -->
+
+                <a
+                    href="{{ url_for('student.growth') }}"
+                    class="quick-action"
+                >
+
+                    <span>
+                        ↗
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            View Growth
+                        </strong>
+
+                        <small>
+                            See your progress over time
+                        </small>
+
+                    </div>
+
+                </a>
+
+
+                <!-- Activity History -->
+
+                <a
+                    href="{{ url_for('student.activity_history') }}"
+                    class="quick-action"
+                >
+
+                    <span>
+                        ◷
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Activity History
+                        </strong>
+
+                        <small>
+                            Review your previous progress
+                        </small>
+
+                    </div>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Mentor Feedback -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <p class="dashboard-label">
+                    MENTOR FEEDBACK
+                </p>
+
+                <h2>
+                    Feedback From Your Mentor
+                </h2>
+
+                <p>
+                    Guidance and suggestions from your mentor.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if feedback %}
+
+            {% for item in feedback %}
+
+                <div class="feedback-item">
+
+                    <p>
+                        {{ item.feedback_text }}
+                    </p>
+
+                    <span class="feedback-date">
+
+                        {{ item.mentor_name }}
+
+                        {% if item.activity_title %}
+                            · {{ item.activity_title }}
+                        {% endif %}
+
+                        · {{ item.created_at.strftime("%d %b %Y") }}
+
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <p>
+                    No mentor feedback yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
